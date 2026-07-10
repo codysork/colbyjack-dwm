@@ -1,6 +1,8 @@
 # include <stdio.h>
 # include <string.h>
 
+# define DMENU_FONT "FiraCode-Regular:pixelsize=24:antialias=true:autohint=true"
+
 void exitdwm ()
 {
 # if							   \
@@ -36,6 +38,7 @@ void exitdwm ()
 
 # define S_FORMAT(ACTION) S_##ACTION##_ICON " " S_##ACTION
 # define S_FORMAT_CLEAR "sed 's/^..//'"
+# define DMENU_FORMAT "dmenu -fn " DMENU_FONT
 
 	FILE * exit_menu = popen (
 		"echo \""
@@ -45,7 +48,7 @@ void exitdwm ()
 			S_FORMAT (EXIT) "\n"
 			S_FORMAT (REBOOT) "\n"
 			S_FORMAT (SHUTDOWN)
-			"\" | dmenu -p exit: | " S_FORMAT_CLEAR
+			"\" | " DMENU_FORMAT " / " S_FORMAT_CLEAR
 		,
 		"r"
 	);
