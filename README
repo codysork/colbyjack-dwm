@@ -47,3 +47,8 @@ Configuration
 -------------
 The configuration of dwm is done by creating a custom config.h
 and (re)compiling the source code.
+
+Preferences and Hotkeys
+-----------------------
+One of the elegant things about suckless software is that it's simple enough
+that the source code is itself the documentation. Take a look at config.def.h!
