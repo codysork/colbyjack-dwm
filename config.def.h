@@ -60,6 +60,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *browsercmd[] = { "brave", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -74,6 +75,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,      togglefloating, {0} },
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
 	/* Convention: MODKEY|ControlMask binds open programs*/
+	{ MODKEY|ControlMask,           XK_b,      spawn,          {.v = browsercmd } },
 	{ MODKEY|ControlMask,           XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = termcmd } },
 	/* Convention: MODKEY|ControlMask|ShiftMask binds control dwm itself*/
