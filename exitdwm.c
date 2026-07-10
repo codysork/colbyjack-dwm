@@ -48,7 +48,7 @@ void exitdwm ()
 			S_FORMAT (EXIT) "\n"
 			S_FORMAT (REBOOT) "\n"
 			S_FORMAT (SHUTDOWN)
-			"\" | " DMENU_FORMAT " / " S_FORMAT_CLEAR
+			"\" | " DMENU_FORMAT " | " S_FORMAT_CLEAR
 		,
 		"r"
 	);
