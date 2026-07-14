@@ -1,3 +1,5 @@
+/* @edited_by: Cody Sork <codysork@tutamail.com> */
+/* @modified: 2026-07-14
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
@@ -70,6 +72,7 @@ static const char *browsercmd[] = { "brave", NULL };
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+
 #include "exitdwm.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -83,11 +86,12 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_f,      togglefloating, {0} },
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-	/* Convention: MODKEY|ControlMask binds open programs*/
+	/* Convention: MODKEY|ControlMask binds the opening of programs*/
 	{ MODKEY|ControlMask,           XK_b,      spawn,          {.v = browsercmd } },
 	{ MODKEY|ControlMask,           XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY|ControlMask,           XK_n,      spawn,          SHCMD("todo.sh -p lsp | head -n 1 | xargs -I {} notify-send {}") },
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = termcmd } },
-	/* Convention: MODKEY|ControlMask|ShiftMask binds control dwm itself*/
+		/* Convention: MODKEY|ControlMask|ShiftMask binds control of dwm itself*/
         { MODKEY|ControlMask|ShiftMask, XK_q,      exitdwm,        {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_t,      setlayout,      {.v = &layouts[0]} },
 	/* Convention: TAGKEYS not set */
