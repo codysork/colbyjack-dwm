@@ -8,6 +8,12 @@ Requirements
 ------------
 In order to build dwm you need the Xlib header files.
 
+Requirements for this specific form of dwm:
+
+- st (terminal)
+- Brave (web browser)
+- Joshuto (file manager)
+- Keepassxc (password manager)
 
 Installation
 ------------
