@@ -92,6 +92,7 @@ static const char *browsercmd[] = { "brave", NULL };
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char *filemanagercmd[] = { "st", "-e", "lf", NULL };
+static const char *knowledgebasecmd[] = { "obsidian", NULL };
 static const char *passwordmanagercmd[] = { "keepassxc", NULL };
 
 #include "exitdwm.c"
@@ -113,6 +114,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_k,      spawn,          {.v = passwordmanagercmd } },
 	{ MODKEY|ControlMask,           XK_l,      spawn,          {.v = filemanagercmd } },
 	{ MODKEY|ControlMask,           XK_n,      spawn,          SHCMD("todo.sh -p lsp | head -n 1 | xargs -I {} notify-send {}") },
+	{ MODKEY|ControlMask,           XK_o,      spawn,          {.v = knowledgebasecmd } },
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = termcmd } },
 		/* Convention: MODKEY|ControlMask|ShiftMask binds control of dwm itself*/
         { MODKEY|ControlMask|ShiftMask, XK_q,      exitdwm,        {0} },
