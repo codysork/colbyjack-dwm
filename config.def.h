@@ -158,33 +158,29 @@ static const Button buttons[] = {
 };
 
 
-/*
- * Xresources preferences to load at startup
- */
-
 /* X resources to update */
 static const XResPref resources[] = {
-		{ "*color0",		STRING,	&normbordercolor },
-		{ "*color8",		STRING,	&selbordercolor },
-		{ "*background",	STRING,	&normbgcolor },
-		{ "*foreground",	STRING,	&normfgcolor },
-		{ "*color0",		STRING,	&selfgcolor },
-		{ "*color4",		STRING,	&selbgcolor },
-		{ "*color0",             STRING,  &dmenucmd[6] },
-		{ "*color8",             STRING,  &dmenucmd[8] },
-		{ "*color0",             STRING,  &dmenucmd[10] },
-		{ "*color8",             STRING,  &dmenucmd[12] },
-		{ "borderpx",		INTEGER, &borderpx },
-		{ "snap",		INTEGER, &snap },
-		{ "showbar",		INTEGER, &showbar },
-		{ "topbar",		INTEGER, &topbar },
-		{ "nmaster",		INTEGER, &nmaster },
-		{ "resizehints",	INTEGER, &resizehints },
-		{ "mfact",		FLOAT,	&mfact },
-		{ "gappih",		INTEGER, &gappih },
-		{ "gappiv",		INTEGER, &gappiv },
-		{ "gappoh",		INTEGER, &gappoh },
-		{ "gappov",		INTEGER, &gappov },
-		{ "swallowfloating",	INTEGER, &swallowfloating },
-		{ "smartgaps",		INTEGER, &smartgaps },
+		{ "color0",		STRING,	&colors[SchemeNorm][2] },
+		{ "color8",		STRING,	&colors[SchemeSel][2] },
+		{ "background",	        STRING,	&colors[SchemeNorm][1] },
+		{ "foreground",	        STRING,	&colors[SchemeNorm][0] },
+		{ "color0",		STRING,	&colors[SchemeSel][0] },
+		{ "color4",		STRING,	&colors[SchemeSel][1] },
+		{ "color0",             STRING,  &dmenucmd[6] },
+		{ "foreground",         STRING,  &dmenucmd[8] },
+		{ "color8",             STRING,  &dmenucmd[10] },
+		//{ "color8",             STRING,  &dmenucmd[12] },
+		//{ "borderpx",		INTEGER, &borderpx },
+		//{ "snap",		INTEGER, &snap },
+		//{ "showbar",		INTEGER, &showbar },
+		//{ "topbar",		INTEGER, &topbar },
+		//{ "nmaster",		INTEGER, &nmaster },
+		//{ "resizehints",	INTEGER, &resizehints },
+		//{ "mfact",		FLOAT,	&mfact },
+		//{ "gappih",		INTEGER, &gappih },
+		//{ "gappiv",		INTEGER, &gappiv },
+		//{ "gappoh",		INTEGER, &gappoh },
+		//{ "gappov",		INTEGER, &gappov },
+		//{ "swallowfloating",	INTEGER, &swallowfloating },
+		//{ "smartgaps",		INTEGER, &smartgaps },
 };
