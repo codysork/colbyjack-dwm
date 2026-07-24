@@ -37,6 +37,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
+#include <X11/Xresource.h>
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
@@ -81,6 +82,7 @@ enum { Manager, Xembed, XembedInfo, XLast }; /* Xembed atoms */
 enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+enum XResType {STRING, INTEGER, FLOAT};
 
 typedef union {
 	int i;
@@ -166,6 +168,12 @@ struct Systray {
 	Window win;
 	Client *icons;
 };
+
+typedef struct {
+	const char *name;
+	enum XResType type;
+	void *dst;
+} XResPref;
 
 /* function declarations */
 static void applyrules(Client *c);
@@ -272,6 +280,9 @@ static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
 static void zoom(const Arg *arg);
+static void xresload(const XResPref *resource);
+static void xresupdate(void);
+static void xresreload(const Arg *arg);
 
 /* variables */
 static const char autostartblocksh[] = "autostart_blocking.sh";
@@ -314,6 +325,7 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static XrmDatabase xrdb = NULL;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -545,6 +557,7 @@ cleanup(void)
 	free(scheme);
 	XDestroyWindow(dpy, wmcheckwin);
 	drw_free(drw);
+	XrmDestroyDatabase(xrdb);
 	XSync(dpy, False);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
@@ -2617,6 +2630,132 @@ zoom(const Arg *arg)
 	pop(c);
 }
 
+void
+xresload(const XResPref *resource)
+{
+	char *type;
+	XrmValue ret;
+
+	if (!XrmGetResource(xrdb, resource->name, NULL, &type, &ret))
+		return;
+	if (!ret.addr || strncmp(type, "String", sizeof("String")))
+		return;
+
+	switch (resource->type) {
+	case STRING:
+		*(char **)resource->dst = ret.addr;
+		break;
+	case INTEGER:
+		*(int *)resource->dst = strtoul(ret.addr, NULL, 10);
+		break;
+	case FLOAT:
+		*(float *)resource->dst = strtof(ret.addr, NULL);
+		break;
+	}
+}
+
+void
+xresupdate(void)
+{
+	Display *display;
+	char *resm;
+	const XResPref *p;
+
+	display = XOpenDisplay(NULL);
+	if (!display)
+		return;
+	resm = XResourceManagerString(display);
+	if (resm) {
+		if (xrdb)
+			XrmDestroyDatabase(xrdb);
+		xrdb = XrmGetStringDatabase(resm);
+		if (xrdb) {
+			for (p = resources; p < resources + LENGTH(resources); ++p)
+				xresload(p);
+		}
+	}
+	XCloseDisplay(display);
+}
+
+void
+xresreload(const Arg *arg)
+{
+	int i;
+
+	xresupdate();
+	for (i = 0; i < LENGTH(colors); ++i) {
+		drw_scm_free(drw, scheme[i], 3);
+		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	}
+	drw_fontset_free(drw->fonts);
+	drw_fontset_create(drw, fonts, LENGTH(fonts));
+	focus(NULL);
+	arrange(NULL);
+}
+
+void
+xresload(const XResPref *resource)
+{
+	char *type;
+	XrmValue ret;
+
+	if (!XrmGetResource(xrdb, resource->name, NULL, &type, &ret))
+		return;
+	if (!ret.addr || strncmp(type, "String", sizeof("String")))
+		return;
+
+	switch (resource->type) {
+	case STRING:
+		*(char **)resource->dst = ret.addr;
+		break;
+	case INTEGER:
+		*(int *)resource->dst = strtoul(ret.addr, NULL, 10);
+		break;
+	case FLOAT:
+		*(float *)resource->dst = strtof(ret.addr, NULL);
+		break;
+	}
+}
+
+void
+xresupdate(void)
+{
+	Display *display;
+	char *resm;
+	const XResPref *p;
+
+	display = XOpenDisplay(NULL);
+	if (!display)
+		return;
+	resm = XResourceManagerString(display);
+	if (resm) {
+		if (xrdb)
+			XrmDestroyDatabase(xrdb);
+		xrdb = XrmGetStringDatabase(resm);
+		if (xrdb) {
+			for (p = resources; p < resources + LENGTH(resources); ++p)
+				xresload(p);
+		}
+	}
+	XCloseDisplay(display);
+}
+
+void
+xresreload(const Arg *arg)
+{
+	int i;
+
+	xresupdate();
+	for (i = 0; i < LENGTH(colors); ++i) {
+		drw_scm_free(drw, scheme[i], 3);
+		scheme[i] = drw_scm_create(drw, colors[i], 3);
+	}
+	drw_fontset_free(drw->fonts);
+	drw_fontset_create(drw, fonts, LENGTH(fonts));
+	focus(NULL);
+	arrange(NULL);
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -2629,6 +2768,8 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("dwm: cannot open display");
 	checkotherwm();
+	XrmInitialize();
+	xresupdate();
 	setup();
 #ifdef __OpenBSD__
 	if (pledge("stdio rpath proc exec", NULL) == -1)
