@@ -10,6 +10,7 @@ static const unsigned int gappiv    = 12;       /* vert inner gap between window
 static const unsigned int gappoh    = 12;       /* horiz outer gap between windows and screen edge */
 static const unsigned int gappov    = 24;       /* vert outer gap between windows and screen edge */
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
+static int swallowfloating    = 0;        /* 1 means swallow floating windows by default *m */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayonleft = 0;     /* 0: systray on right, 1: systray on left */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
@@ -19,24 +20,16 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = {"FiraCodeNerdFont-Regular:pixelsize=24:antialias=true:autohint=true", "monospace:size=12"};
 static const char dmenufont[]       = "FiraCodeNerdFont-Regular:pixelsize=24:antialias=true:autohint=true";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
-static unsigned int borderpx   = 1;        /* border pixel of windows */
-static unsigned int snap       = 32;       /* snap pixel */
-static int showbar             = 1;        /* 0 means no bar */
-static int topbar              = 1;        /* 0 means bottom bar */
-static const char *fonts[]     = { "monospace:size=10" };
-static const char *colors[][3] = {
-       /* scheme        fg         bg         border   */
-       [SchemeNorm] = { "#bbbbbb", "#222222", "#444444" },
-       [SchemeSel]  = { "#eeeeee", "#005577", "#005577" },
+static char normbgcolor[]           = "#222222";
+static char normbordercolor[]       = "#444444";
+static char normfgcolor[]           = "#bbbbbb";
+static char selfgcolor[]            = "#eeeeee";
+static char selbordercolor[]        = "#770000";
+static char selbgcolor[]            = "#005577";
+static char *colors[][3] = {
+       /*               fg           bg           border   */
+       [SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+       [SchemeSel]  = { selfgcolor,  selbgcolor,  selbordercolor  },
 };
 
 /* Default programs */
@@ -99,7 +92,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *browsercmd[] = { "brave", NULL };
 static const char *calendarcmd[] = { "st", "-e", "calcurse", NULL };
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbordercolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", normbgcolor, NULL };
 static const char *emailcmd[] = { "st", "-e", "neomutt", NULL };
 static const char *filemanagercmd[] = { "st", "-e", "lf", NULL };
 static const char *knowledgebasecmd[] = { "obsidian", NULL };
@@ -164,26 +157,34 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
 
+
+/*
+ * Xresources preferences to load at startup
+ */
+
 /* X resources to update */
 static const XResPref resources[] = {
-	/* name                type     address */
-	{ "dwm.font",          STRING,  &fonts[0] },
-	{ "dwm.dmenufont",     STRING,  &dmenucmd[4] },
-	{ "dwm.background",    STRING,  &dmenucmd[6] },
-	{ "dwm.foreground",    STRING,  &dmenucmd[8] },
-	{ "dwm.backgroundSel", STRING,  &dmenucmd[10] },
-	{ "dwm.foregroundSel", STRING,  &dmenucmd[12] },
-	{ "dwm.foreground",    STRING,  &colors[SchemeNorm][ColFg] },
-	{ "dwm.background",    STRING,  &colors[SchemeNorm][ColBg] },
-	{ "dwm.border",        STRING,  &colors[SchemeNorm][ColBorder] },
-	{ "dwm.foregroundSel", STRING,  &colors[SchemeSel][ColFg] },
-	{ "dwm.backgroundSel", STRING,  &colors[SchemeSel][ColBg] },
-	{ "dwm.borderSel",     STRING,  &colors[SchemeSel][ColBorder] },
-	{ "dwm.borderpx",      INTEGER, &borderpx },
-	{ "dwm.snap",          INTEGER, &snap },
-	{ "dwm.showbar",       INTEGER, &showbar },
-	{ "dwm.topbar",        INTEGER, &topbar },
-	{ "dwm.nmaster",       INTEGER, &nmaster },
-	{ "dwm.resizehints",   INTEGER, &resizehints },
-	{ "dwm.mfact",         FLOAT,   &mfact },
+		{ "color0",		STRING,	&normbordercolor },
+		{ "color8",		STRING,	&selbordercolor },
+		{ "color0",		STRING,	&normbgcolor },
+		{ "color4",		STRING,	&normfgcolor },
+		{ "color0",		STRING,	&selfgcolor },
+		{ "color4",		STRING,	&selbgcolor },
+		{ "color0",             STRING,  &dmenucmd[6] },
+		{ "color8",             STRING,  &dmenucmd[8] },
+		{ "color0",             STRING,  &dmenucmd[10] },
+		{ "color8",             STRING,  &dmenucmd[12] },
+		{ "borderpx",		INTEGER, &borderpx },
+		{ "snap",		INTEGER, &snap },
+		{ "showbar",		INTEGER, &showbar },
+		{ "topbar",		INTEGER, &topbar },
+		{ "nmaster",		INTEGER, &nmaster },
+		{ "resizehints",	INTEGER, &resizehints },
+		{ "mfact",		FLOAT,	&mfact },
+		{ "gappih",		INTEGER, &gappih },
+		{ "gappiv",		INTEGER, &gappiv },
+		{ "gappoh",		INTEGER, &gappoh },
+		{ "gappov",		INTEGER, &gappov },
+		{ "swallowfloating",	INTEGER, &swallowfloating },
+		{ "smartgaps",		INTEGER, &smartgaps },
 };

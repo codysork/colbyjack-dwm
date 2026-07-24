@@ -163,17 +163,18 @@ typedef struct {
 	int monitor;
 } Rule;
 
-typedef struct Systray   Systray;
-struct Systray {
-	Window win;
-	Client *icons;
-};
 
 typedef struct {
 	const char *name;
 	enum XResType type;
 	void *dst;
 } XResPref;
+
+typedef struct Systray   Systray;
+struct Systray {
+	Window win;
+	Client *icons;
+};
 
 /* function declarations */
 static void applyrules(Client *c);
@@ -2628,69 +2629,6 @@ zoom(const Arg *arg)
 	if (c == nexttiled(selmon->clients) && !(c = nexttiled(c->next)))
 		return;
 	pop(c);
-}
-
-void
-xresload(const XResPref *resource)
-{
-	char *type;
-	XrmValue ret;
-
-	if (!XrmGetResource(xrdb, resource->name, NULL, &type, &ret))
-		return;
-	if (!ret.addr || strncmp(type, "String", sizeof("String")))
-		return;
-
-	switch (resource->type) {
-	case STRING:
-		*(char **)resource->dst = ret.addr;
-		break;
-	case INTEGER:
-		*(int *)resource->dst = strtoul(ret.addr, NULL, 10);
-		break;
-	case FLOAT:
-		*(float *)resource->dst = strtof(ret.addr, NULL);
-		break;
-	}
-}
-
-void
-xresupdate(void)
-{
-	Display *display;
-	char *resm;
-	const XResPref *p;
-
-	display = XOpenDisplay(NULL);
-	if (!display)
-		return;
-	resm = XResourceManagerString(display);
-	if (resm) {
-		if (xrdb)
-			XrmDestroyDatabase(xrdb);
-		xrdb = XrmGetStringDatabase(resm);
-		if (xrdb) {
-			for (p = resources; p < resources + LENGTH(resources); ++p)
-				xresload(p);
-		}
-	}
-	XCloseDisplay(display);
-}
-
-void
-xresreload(const Arg *arg)
-{
-	int i;
-
-	xresupdate();
-	for (i = 0; i < LENGTH(colors); ++i) {
-		drw_scm_free(drw, scheme[i], 3);
-		scheme[i] = drw_scm_create(drw, colors[i], 3);
-	}
-	drw_fontset_free(drw->fonts);
-	drw_fontset_create(drw, fonts, LENGTH(fonts));
-	focus(NULL);
-	arrange(NULL);
 }
 
 void
