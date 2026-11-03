@@ -6,7 +6,7 @@ include config.mk
 SRC = drw.c dwm.c util.c
 OBJ = ${SRC:.c=.o}
 
-all: notify-build dwm notify-complete
+all: dwm
 
 .c.o:
 	${CC} -c ${CFLAGS} $<
@@ -41,12 +41,5 @@ install: all
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1
-
-notify-build:
-	@dunstify "Compiling dwm..."
-
-notify-complete:
-	@dunstify "Build complete!"
-
 
 .PHONY: all clean dist install uninstall
