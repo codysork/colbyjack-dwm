@@ -66,11 +66,6 @@ static const Layout layouts[] = {
 	{ "[@]",      spiral },
 	{ "H[]",      deck },
 	{ "TTT",      bstack },
-	{ "===",      bstackhoriz },
-	{ "HHH",      grid },
-	{ "###",      nrowgrid },
-	{ "---",      horizgrid },
-	{ ":::",      gaplessgrid },
 	{ "|M|",      centeredmaster },
 	{ ">M>",      centeredfloatingmaster },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
@@ -99,6 +94,7 @@ static const char *knowledgebasecmd[] = { "obsidian", NULL };
 static const char *passwordmanagercmd[] = { "keepassxc", NULL };
 static const char *rsscmd[] = { "st", "-e", "newsraft", NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *todocmd[] = { "todo.sh", "popup", NULL };
 
 #include "exitdwm.c"
 static const Key keys[] = {
@@ -123,6 +119,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_n,      spawn,          SHCMD("todo.sh -p lsp | head -n 1 | xargs -I {} notify-send {}") },
 	{ MODKEY|ControlMask,           XK_p,      spawn,          {.v = passwordmanagercmd } },
 	{ MODKEY|ControlMask,           XK_r,      spawn,          {.v = rsscmd } },
+	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = todocmd } },
 	{ MODKEY|ControlMask,           XK_Return, spawn,          {.v = termcmd } },
 		/* Convention: MODKEY|ControlMask|ShiftMask binds control of dwm itself*/
         { MODKEY|ControlMask|ShiftMask, XK_q,      exitdwm,        {0} },
