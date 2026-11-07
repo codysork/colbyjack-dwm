@@ -117,6 +117,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_f,      spawn,          {.v = filemanagercmd } },
 	{ MODKEY|ControlMask,           XK_k,      spawn,          {.v = knowledgebasecmd } },
 	{ MODKEY|ControlMask,           XK_n,      spawn,          SHCMD("todo.sh -p lsp | head -n 1 | xargs -I {} notify-send {}") },
+    { MODKEY|ControlMask,           XK_o,      spawn,          SHCMD("bookmarks | sed '/^| dmenu/d' | dmenu -l 25 | cut -d ' ' -f 1 | xargs -I {} xdg-open {}") },
 	{ MODKEY|ControlMask,           XK_p,      spawn,          {.v = passwordmanagercmd } },
 	{ MODKEY|ControlMask,           XK_r,      spawn,          {.v = rsscmd } },
 	{ MODKEY|ControlMask,           XK_t,      spawn,          {.v = todocmd } },
