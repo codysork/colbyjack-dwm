@@ -90,6 +90,7 @@ static const char *calendarcmd[] = { "st", "-e", "calcurse", NULL };
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbordercolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", normbgcolor, NULL };
 static const char *emailcmd[] = { "st", "-e", "neomutt", NULL };
 static const char *filemanagercmd[] = { "st", "-e", "lf", NULL };
+static const char *hotfilescmd[] = { "hotfiles.sh", "-t", NULL };
 static const char *knowledgebasecmd[] = { "obsidian", NULL };
 static const char *passwordmanagercmd[] = { "keepassxc", NULL };
 static const char *rsscmd[] = { "st", "-e", "newsraft", NULL };
@@ -115,6 +116,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ControlMask,           XK_e,      spawn,          {.v = emailcmd } },
 	{ MODKEY|ControlMask,           XK_f,      spawn,          {.v = filemanagercmd } },
+    { MODKEY|ControlMask,           XK_h,      spawn,          {.v = hotfilescmd } },
 	{ MODKEY|ControlMask,           XK_k,      spawn,          {.v = knowledgebasecmd } },
 	{ MODKEY|ControlMask,           XK_n,      spawn,          SHCMD("todo.sh -p lsp | head -n 1 | xargs -I {} notify-send {}") },
     { MODKEY|ControlMask,           XK_o,      spawn,          SHCMD("bookmarks | sed '/^| dmenu/d' | dmenu -l 25 | cut -d ' ' -f 1 | xargs -I {} xdg-open {}") },
